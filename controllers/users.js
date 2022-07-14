@@ -7,7 +7,7 @@ const {
 module.exports.getUsers = (req, res) => {
   User.find({})
     .then((users) => res.send({ data: users }))
-    .catch(() => res.status(SERVER_ERROR).send({ message: 'Произошла ошибка' }));
+    .catch(() => res.status(SERVER_ERROR).send({ message: 'На сервере произошла ошибка' }));
 };
 
 // возвращает пользователя по _id
@@ -68,7 +68,7 @@ module.exports.updateUser = (req, res) => {
     })
     .catch((err) => {
       if (err.name === 'CastError' || err.name === 'ValidationError') {
-        res.status(BAD_REQUEST).send({ message: `Переданы некорректные данные при обновлении профиля ${err.message}` });
+        res.status(BAD_REQUEST).send({ message: 'Переданы некорректные данные при обновлении профиля' });
         return;
       }
       res.status(SERVER_ERROR).send({ message: 'На сервере произошла ошибка' });
@@ -96,7 +96,7 @@ module.exports.updateAvatar = (req, res) => {
     })
     .catch((err) => {
       if (err.name === 'CastError' || err.name === 'ValidationError') {
-        res.status(BAD_REQUEST).send({ message: `Переданы некорректные данные при обновлении аватара ${err.message}` });
+        res.status(BAD_REQUEST).send({ message: 'Переданы некорректные данные при обновлении аватара' });
         return;
       }
       res.status(SERVER_ERROR).send({ message: 'На сервере произошла ошибка' });
