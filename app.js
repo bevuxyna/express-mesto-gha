@@ -14,6 +14,14 @@ const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
+app.use((req, res, next) => {
+  req.user = {
+    _id: '62cf2655159a0d744a451c01',
+  };
+
+  next();
+});
+
 app.use('/users', router);
 
 app.listen(PORT, () => {
