@@ -1,3 +1,5 @@
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 const {
   CREATED, BAD_REQUEST, NOT_FOUND, SERVER_ERROR,
@@ -31,19 +33,44 @@ module.exports.getUser = (req, res) => {
 
 // создаёт пользователя
 module.exports.createUser = (req, res) => {
-  const { name, about, avatar } = req.body;
+  const {
+    name, about, avatar, email, password,
+  } = req.body;
 
-  // записываем данные в базу
-  User.create({ name, about, avatar })
-    // возвращаем записанные в базу данные пользователю
+  // хешируем пароль
+  bcrypt.hash(password, 10)
+    .then((hash) => User.create({
+      name, about, avatar, email, password: hash,
+    }))
     .then((user) => res.status(CREATED).send({ data: user }))
-    // если данные не записались, вернём ошибку
     .catch((err) => {
       if (err.name === 'ValidationError') {
         res.status(BAD_REQUEST).send({ message: 'Переданы некорректные данные при создании пользователя' });
         return;
       }
       res.status(SERVER_ERROR).send({ message: 'На сервере произошла ошибка' });
+    });
+};
+
+module.exports.login = (req, res) => {
+  const { email, password } = req.body;
+
+  return User.findUserByCredentials(email, password, res)
+    .then((user) => {
+      // создадим токен
+      const token = jwt.sign(
+        { _id: user._id },
+        'some-secret-key',
+        { expiresIn: '7d' },
+      );
+      res.cookie('jwt', token, {
+        httpOnly: true,
+        sameSite: true,
+      })
+        .send({ token });
+    })
+    .catch((err) => {
+      res.status(401).send({ message: err.message });
     });
 };
 
