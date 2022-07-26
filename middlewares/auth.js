@@ -2,7 +2,7 @@ const jwt = require('jsonwebtoken');
 const { UNAUTHORIZED } = require('../utils/status');
 
 // eslint-disable-next-line consistent-return
-module.exports = (req, res, next) => {
+const auth = (req, res, next) => {
   const { authorization } = req.headers;
 
   if (!authorization || !authorization.startsWith('Bearer ')) {
@@ -25,4 +25,8 @@ module.exports = (req, res, next) => {
   req.user = payload; // записываем пейлоуд в объект запроса
 
   next(); // пропускаем запрос дальше
+};
+
+module.exports = {
+  auth,
 };
