@@ -2,7 +2,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 const {
-  CREATED, BAD_REQUEST, NOT_FOUND, SERVER_ERROR,
+  CREATED, BAD_REQUEST, NOT_FOUND, SERVER_ERROR, UNAUTHORIZED,
 } = require('../utils/status');
 
 // возвращает всех пользователей
@@ -28,6 +28,24 @@ module.exports.getUser = (req, res) => {
         return;
       }
       res.status(SERVER_ERROR).send({ message: 'На сервере произошла ошибка' });
+    });
+};
+
+module.exports.getUserInfo = (req, res, next) => {
+  User.findById(req.user._id)
+    .then((user) => {
+      if (!user) {
+        res.status(NOT_FOUND).send({ message: 'Пользователь по указанному id не найден' });
+        return;
+      }
+      res.send(user);
+    })
+    .catch((err) => {
+      if (err.name === 'CastError') {
+        res.status(BAD_REQUEST).send({ message: 'Переданы некорректные данные пользователя' });
+        return;
+      }
+      next(err);
     });
 };
 
@@ -70,7 +88,7 @@ module.exports.login = (req, res) => {
         .send({ token });
     })
     .catch((err) => {
-      res.status(401).send({ message: err.message });
+      res.status(UNAUTHORIZED).send({ message: err.message });
     });
 };
 
