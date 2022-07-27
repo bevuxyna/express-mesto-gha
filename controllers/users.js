@@ -54,17 +54,17 @@ module.exports.createUser = (req, res, next) => {
       name, about, avatar, email, password: hash,
     }))
     .then((user) => res.status(CREATED).send({ data: user }))
+    // eslint-disable-next-line consistent-return
     .catch((err) => {
-      if (err.name === 'MongoServerError' && err.code === 11000) {
-        next(new ConflictError('Пользователь с таким email уже существует'));
-        return;
+      if (err.code === 11000) {
+        return next(new ConflictError('Пользователь с таким email уже существует'));
       }
 
       if (err.name === 'ValidationError') {
-        next(new BadRequestError('Переданы некорректные данные при создании пользователя'));
-      } else {
-        next(err);
+        return next(new BadRequestError('Переданы некорректные данные при создании пользователя'));
       }
+
+      next(err);
     });
 };
 
