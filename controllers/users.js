@@ -54,7 +54,6 @@ module.exports.createUser = (req, res, next) => {
       name, about, avatar, email, password: hash,
     }))
     .then((user) => res.status(CREATED).send({ data: user }))
-    // eslint-disable-next-line consistent-return
     .catch((err) => {
       if (err.code === 11000) {
         return next(new ConflictError('Пользователь с таким email уже существует'));
@@ -64,7 +63,7 @@ module.exports.createUser = (req, res, next) => {
         return next(new BadRequestError('Переданы некорректные данные при создании пользователя'));
       }
 
-      next(err);
+      return next(err);
     });
 };
 
