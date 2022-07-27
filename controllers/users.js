@@ -4,6 +4,7 @@ const User = require('../models/user');
 const { CREATED } = require('../utils/status');
 const { BadRequestError } = require('../errors/bad-request-error');
 const { NotFoundError } = require('../errors/not-found-error');
+const { ConflictError } = require('../errors/conflict-error');
 
 // возвращает всех пользователей
 module.exports.getUsers = (req, res, next) => {
@@ -54,6 +55,11 @@ module.exports.createUser = (req, res, next) => {
     }))
     .then((user) => res.status(CREATED).send({ data: user }))
     .catch((err) => {
+      if (err.name === 'MongoServerError' && err.code === 11000) {
+        next(new ConflictError('Пользователь с таким email уже существует'));
+        return;
+      }
+
       if (err.name === 'ValidationError') {
         next(new BadRequestError('Переданы некорректные данные при создании пользователя'));
       } else {
