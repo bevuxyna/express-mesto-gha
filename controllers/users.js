@@ -18,7 +18,7 @@ module.exports.getUser = (req, res, next) => {
   const userId = req.user._id;
   return User.findById(userId)
     .then((user) => {
-      res.status(CREATED).send(user);
+      res.status(200).send(user);
     })
     .catch(next);
 };
@@ -96,7 +96,7 @@ module.exports.updateUser = (req, res, next) => {
     },
   )
     .then((data) => {
-      res.status(CREATED).send(data);
+      res.status(200).send(data);
     })
     .catch((err) => {
       if (err.name === 'CastError' || err.name === 'ValidationError') {
@@ -120,7 +120,7 @@ module.exports.updateAvatar = (req, res, next) => {
     },
   )
     .then((data) => {
-      res.status(CREATED).send(data);
+      res.status(200).send(data);
     })
     .catch((err) => {
       if (err.name === 'CastError' || err.name === 'ValidationError') {

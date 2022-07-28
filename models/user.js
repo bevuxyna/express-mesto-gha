@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
 const { compare } = require('bcrypt');
-const { UNAUTHORIZED } = require('../utils/status');
+const { UnauthorizedError } = require('../errors/unauthorized-error');
 
 const userSchema = new mongoose.Schema({
   name: {
@@ -42,16 +42,16 @@ const userSchema = new mongoose.Schema({
   },
 });
 
-userSchema.statics.findUserByCredentials = function findUserByCredentials(email, password, res) {
+userSchema.statics.findUserByCredentials = function findUserByCredentials(email, password) {
   return this.findOne({ email }).select('+password')
     .then((user) => {
       if (!user) {
-        res.status(UNAUTHORIZED).send({ message: 'Ошибка авторизации' });
+        throw new UnauthorizedError('Ошибка авторизации');
       }
       return compare(password, user.password)
         .then((matched) => {
           if (!matched) {
-            res.status(UNAUTHORIZED).send({ message: 'Ошибка авторизации' });
+            throw new UnauthorizedError('Ошибка авторизации');
           }
           return user;
         });
