@@ -18,7 +18,7 @@ module.exports.getUser = (req, res, next) => {
   const userId = req.user._id;
   return User.findById(userId)
     .then((user) => {
-      res.status(200).send(user);
+      res.status(CREATED).send(user);
     })
     .catch(next);
 };
@@ -92,18 +92,16 @@ module.exports.updateUser = (req, res, next) => {
       runValidators: true, // данные будут валидированы перед изменением
     },
   )
-    .then((user) => {
-      if (!user) {
-        return new NotFoundError('Пользователь с указанным id не найден');
-      }
-      return res.send(user);
+    .then((data) => {
+      res.status(CREATED).send(data);
     })
     .catch((err) => {
       if (err.name === 'CastError' || err.name === 'ValidationError') {
-        return new BadRequestError('Переданы некорректные данные при обновлении профиля');
+        throw new BadRequestError('Переданы некорректные данные при обновлении профиля');
       }
-      return next(err);
-    });
+      next(err);
+    })
+    .catch(next);
 };
 
 // обновляет аватар
