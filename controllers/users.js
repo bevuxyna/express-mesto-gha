@@ -33,7 +33,7 @@ module.exports.getUserInfo = (req, res, next) => {
       res.status(200).send(data);
     })
     .catch((error) => {
-      if (error.name === 'ValidationError') {
+      if (error.name === 'CastError') {
         throw new BadRequestError('Пользователь не найден');
       }
       next(error);
