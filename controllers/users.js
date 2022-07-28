@@ -2,6 +2,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 const BadRequestError = require('../errors/bad-request-error');
+const NotFoundError = require('../errors/not-found-error');
 const ConflictError = require('../errors/conflict-error');
 
 // возвращает всех пользователей
@@ -25,6 +26,10 @@ module.exports.getUserInfo = (req, res, next) => {
   const userId = req.params.id;
   User.findById(userId)
     .then((data) => {
+      if (!data) {
+        throw new NotFoundError('Нет пользователя с таким id');
+      }
+
       res.status(200).send(data);
     })
     .catch((error) => {
