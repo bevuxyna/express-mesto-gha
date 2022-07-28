@@ -86,7 +86,17 @@ module.exports.login = (req, res, next) => {
         'some-secret-key',
         { expiresIn: '7d' },
       );
-      res.status(200).send({ token });
+      res.cookie('jwt', token, {
+        httpOnly: true,
+        sameSite: true,
+      })
+        .send({ token });
+    })
+    .catch((err) => {
+      if (err.name === 'ValidationError') {
+        throw new BadRequestError('Переданы некорректные данные при обновлении профиля');
+      }
+      next(err);
     })
     .catch(next);
 };
