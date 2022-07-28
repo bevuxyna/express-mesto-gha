@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 const { CREATED } = require('../utils/status');
 const { BadRequestError } = require('../errors/bad-request-error');
-const { NotFoundError } = require('../errors/not-found-error');
+// const { NotFoundError } = require('../errors/not-found-error');
 const { ConflictError } = require('../errors/conflict-error');
 
 // возвращает всех пользователей
@@ -25,11 +25,14 @@ module.exports.getUser = (req, res, next) => {
 
 module.exports.getUserInfo = (req, res, next) => {
   User.findById(req.user._id)
-    .then((user) => {
-      if (!user) {
-        return new NotFoundError('Пользователь по указанному id не найден');
+    .then((data) => {
+      res.status(200).send(data);
+    })
+    .catch((error) => {
+      if (error.name === 'ValidationError') {
+        throw new BadRequestError('Пользователь не найден');
       }
-      return res.send(user);
+      next(error);
     })
     .catch(next);
 };
@@ -116,16 +119,14 @@ module.exports.updateAvatar = (req, res, next) => {
       runValidators: true, // данные будут валидированы перед изменением
     },
   )
-    .then((user) => {
-      if (!user) {
-        return new NotFoundError('Пользователь с указанным id не найден');
-      }
-      return res.send(user);
+    .then((data) => {
+      res.status(CREATED).send(data);
     })
     .catch((err) => {
       if (err.name === 'CastError' || err.name === 'ValidationError') {
-        return new BadRequestError('Переданы некорректные данные при обновлении аватара');
+        throw new BadRequestError('Переданы некорректные данные при обновлении аватара');
       }
-      return next(err);
-    });
+      next(err);
+    })
+    .catch(next);
 };
