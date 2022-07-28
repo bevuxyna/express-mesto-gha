@@ -1,8 +1,8 @@
 const Card = require('../models/card');
 const { CREATED } = require('../utils/status');
-const { BadRequestError } = require('../errors/bad-request-error');
-const { ForbiddenError } = require('../errors/forbidden-error');
-const { NotFoundError } = require('../errors/not-found-error');
+const BadRequestError = require('../errors/bad-request-error');
+const ForbiddenError = require('../errors/forbidden-error');
+const NotFoundError = require('../errors/not-found-error');
 
 // возвращает все карточки
 module.exports.getCards = (req, res, next) => {

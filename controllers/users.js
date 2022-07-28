@@ -1,8 +1,8 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
-const { BadRequestError } = require('../errors/bad-request-error');
-const { ConflictError } = require('../errors/conflict-error');
+const BadRequestError = require('../errors/bad-request-error');
+const ConflictError = require('../errors/conflict-error');
 
 // возвращает всех пользователей
 module.exports.getUsers = (req, res, next) => {
