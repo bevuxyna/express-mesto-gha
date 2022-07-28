@@ -16,8 +16,18 @@ module.exports.getUsers = (req, res, next) => {
 module.exports.getUser = (req, res, next) => {
   const userId = req.user._id;
   return User.findById(userId)
-    .then((user) => {
-      res.status(200).send(user);
+    .then((data) => {
+      if (!data) {
+        throw new NotFoundError('Нет пользователя с таким id');
+      }
+
+      res.status(200).send(data);
+    })
+    .catch((error) => {
+      if (error.name === 'CastError') {
+        throw new BadRequestError('Пользователь не найден');
+      }
+      next(error);
     })
     .catch(next);
 };
