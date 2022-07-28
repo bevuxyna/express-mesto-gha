@@ -15,20 +15,12 @@ module.exports.getUsers = (req, res, next) => {
 
 // возвращает пользователя по _id
 module.exports.getUser = (req, res, next) => {
-  User.findById(req.params.userId)
+  const userId = req.user._id;
+  return User.findById(userId)
     .then((user) => {
-      if (!user) {
-        return next(new NotFoundError('Пользователь по указанному id не найден'));
-      }
-      return res.send(user);
+      res.status(200).send(user);
     })
-    .catch((err) => {
-      if (err.name === 'CastError') {
-        next(new BadRequestError('Переданы некорректные данные пользователя'));
-        return;
-      }
-      next(err);
-    });
+    .catch(next);
 };
 
 module.exports.getUserInfo = (req, res, next) => {
