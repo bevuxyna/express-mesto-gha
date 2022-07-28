@@ -1,9 +1,7 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
-const { CREATED } = require('../utils/status');
 const { BadRequestError } = require('../errors/bad-request-error');
-// const { NotFoundError } = require('../errors/not-found-error');
 const { ConflictError } = require('../errors/conflict-error');
 
 // возвращает всех пользователей
@@ -24,12 +22,12 @@ module.exports.getUser = (req, res, next) => {
 };
 
 module.exports.getUserInfo = (req, res, next) => {
-  User.findById(req.user._id)
+  User.findById(req.params.id)
     .then((data) => {
       res.status(200).send(data);
     })
     .catch((error) => {
-      if (error.name === 'ValidationError') {
+      if (error.name === 'CastError') {
         throw new BadRequestError('Пользователь не найден');
       }
       next(error);
@@ -48,7 +46,7 @@ module.exports.createUser = (req, res, next) => {
     .then((hash) => User.create({
       name, about, avatar, email, password: hash,
     }))
-    .then((user) => res.status(CREATED).send({ data: user }))
+    .then((user) => res.status(200).send({ data: user }))
     .catch((err) => {
       if (err.code === 11000) {
         throw new ConflictError('Пользователь с таким email уже существует');
@@ -99,7 +97,7 @@ module.exports.updateUser = (req, res, next) => {
       res.status(200).send(data);
     })
     .catch((err) => {
-      if (err.name === 'CastError' || err.name === 'ValidationError') {
+      if (err.name === 'ValidationError') {
         throw new BadRequestError('Переданы некорректные данные при обновлении профиля');
       }
       next(err);
@@ -123,7 +121,7 @@ module.exports.updateAvatar = (req, res, next) => {
       res.status(200).send(data);
     })
     .catch((err) => {
-      if (err.name === 'CastError' || err.name === 'ValidationError') {
+      if (err.name === 'ValidationError') {
         throw new BadRequestError('Переданы некорректные данные при обновлении аватара');
       }
       next(err);
