@@ -22,7 +22,8 @@ module.exports.getUser = (req, res, next) => {
 };
 
 module.exports.getUserInfo = (req, res, next) => {
-  User.findById(req.params.id)
+  const userId = req.params.id;
+  User.findById(userId)
     .then((data) => {
       res.status(200).send(data);
     })
