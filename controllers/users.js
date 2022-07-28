@@ -56,15 +56,16 @@ module.exports.createUser = (req, res, next) => {
     .then((user) => res.status(CREATED).send({ data: user }))
     .catch((err) => {
       if (err.code === 11000) {
-        return next(new ConflictError('Пользователь с таким email уже существует'));
+        throw new ConflictError('Пользователь с таким email уже существует');
       }
 
       if (err.name === 'ValidationError') {
-        return next(new BadRequestError('Переданы некорректные данные при создании пользователя'));
+        throw new BadRequestError('Переданы некорректные данные при создании пользователя');
       }
 
-      return next(err);
-    });
+      next(err);
+    })
+    .catch(next);
 };
 
 module.exports.login = (req, res, next) => {
