@@ -86,11 +86,7 @@ module.exports.login = (req, res, next) => {
         'some-secret-key',
         { expiresIn: '7d' },
       );
-      res.cookie('jwt', token, {
-        httpOnly: true,
-        sameSite: true,
-      })
-        .send({ token });
+      res.status(200).send({ token });
     })
     .catch(next);
 };
