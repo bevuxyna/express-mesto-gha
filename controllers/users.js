@@ -33,7 +33,7 @@ module.exports.getUserInfo = (req, res, next) => {
       res.status(200).send(data);
     })
     .catch((error) => {
-      if (error.name === 'CastError') {
+      if (error.name === 'ValidationError') {
         throw new BadRequestError('Пользователь не найден');
       }
       next(error);
@@ -62,10 +62,12 @@ module.exports.createUser = (req, res, next) => {
       });
     })
     .catch((err) => {
+      if (err.code === 11000) {
+        throw new ConflictError('Пользователь с таким email уже существует');
+      }
+
       if (err.name === 'ValidationError') {
         throw new BadRequestError('Переданы некорректные данные при создании пользователя');
-      } else if (err.code === 11000) {
-        throw new ConflictError('Пользователь с таким email уже существует');
       }
 
       next(err);
