@@ -21,18 +21,17 @@ module.exports.getUser = (req, res, next) => {
 
 module.exports.getUserById = (req, res, next) => {
   User.findById(req.params.userId)
-    .then((data) => {
-      if (!data) {
+    .then((user) => {
+      if (!user) {
         throw new NotFoundError('Нет пользователя с таким id');
       }
-
-      res.status(200).send(data);
+      res.status(200).send(user);
     })
-    .catch((error) => {
-      if (error.name === 'CastError') {
+    .catch((err) => {
+      if (err.name === 'CastError') {
         throw new BadRequestError('Пользователь не найден');
       }
-      next(error);
+      next(err);
     })
     .catch(next);
 };
