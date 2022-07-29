@@ -12,10 +12,13 @@ module.exports.getUsers = (req, res, next) => {
 };
 
 module.exports.getUser = (req, res, next) => {
-  const userId = req.user;
-  return User.findById(userId)
+  const { _id } = req.user;
+  User.findById(_id)
     .then((user) => {
-      res.status(200).send(user);
+      if (!user) {
+        throw new NotFoundError('Нет пользователя с таким id');
+      }
+      res.send({ data: user });
     })
     .catch(next);
 };
