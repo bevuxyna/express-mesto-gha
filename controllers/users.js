@@ -13,16 +13,10 @@ module.exports.getUsers = (req, res, next) => {
 
 module.exports.getUser = (req, res, next) => {
   User.findById(req.user._id)
-    .then((data) => res.send(
-      {
-        name: data.name,
-        about: data.about,
-        avatar: data.avatar,
-        _id: data._id,
-        email: data.email,
-      },
-    ))
-    .catch((err) => next(err));
+    .then((user) => {
+      res.status(200).send({ data: user });
+    })
+    .catch(next);
 };
 
 module.exports.getUserById = (req, res, next) => {
