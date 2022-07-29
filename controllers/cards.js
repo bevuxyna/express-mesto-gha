@@ -28,7 +28,7 @@ module.exports.createCard = (req, res, next) => {
 
 // удаляет карточку
 module.exports.deleteCard = (req, res, next) => {
-  const { cardId } = req.params._id;
+  const { cardId } = req.params;
   Card.findByIdAndRemove(cardId)
     .then((card) => {
       if (!card) {
@@ -51,7 +51,7 @@ module.exports.deleteCard = (req, res, next) => {
 };
 
 module.exports.likeCard = (req, res, next) => {
-  const { cardId } = req.params.id;
+  const { cardId } = req.params;
   Card.findByIdAndUpdate(
     cardId,
     // оператор $addToSet для добавления элемента в массив, если его там ещё нет
@@ -75,7 +75,7 @@ module.exports.likeCard = (req, res, next) => {
 };
 
 module.exports.deleteLikeCard = (req, res, next) => {
-  const { cardId } = req.params.id;
+  const { cardId } = req.params;
   Card.findByIdAndUpdate(
     cardId,
     // оператор $pull для удаления элемента из массива
