@@ -12,15 +12,17 @@ module.exports.getUsers = (req, res, next) => {
 };
 
 module.exports.getUser = (req, res, next) => {
-  const { _id } = req.user;
-  User.findById(_id)
-    .then((user) => {
-      if (!user) {
-        throw new NotFoundError('Нет пользователя с таким id');
-      }
-      res.send({ data: user });
-    })
-    .catch(next);
+  User.findById(req.user._id)
+    .then((data) => res.send(
+      {
+        name: data.name,
+        about: data.about,
+        avatar: data.avatar,
+        _id: data._id,
+        email: data.email,
+      },
+    ))
+    .catch((err) => next(err));
 };
 
 module.exports.getUserById = (req, res, next) => {
