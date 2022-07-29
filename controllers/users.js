@@ -11,6 +11,14 @@ module.exports.getUsers = (req, res, next) => {
     .catch(next);
 };
 
+module.exports.getUser = (req, res, next) => {
+  User.findById(req.user._id)
+    .then((user) => {
+      res.status(200).send({ data: user });
+    })
+    .catch(next);
+};
+
 module.exports.getUserById = (req, res, next) => {
   User.findById(req.params.userId)
     .then((user) => {
@@ -24,14 +32,6 @@ module.exports.getUserById = (req, res, next) => {
         throw new BadRequestError('Пользователь не найден');
       }
       next(err);
-    })
-    .catch(next);
-};
-
-module.exports.getUser = (req, res, next) => {
-  User.findById(req.user._id)
-    .then((user) => {
-      res.status(200).send({ data: user });
     })
     .catch(next);
 };
