@@ -12,7 +12,7 @@ module.exports.getUsers = (req, res, next) => {
 };
 
 module.exports.getUser = (req, res, next) => {
-  const userId = req.user._id;
+  const userId = req.user;
   return User.findById(userId)
     .then((user) => {
       res.status(200).send(user);
@@ -83,7 +83,11 @@ module.exports.login = (req, res, next) => {
         'some-secret-key',
         { expiresIn: '7d' },
       );
-      res.status(200).send({ token });
+      res.cookie('jwt', token, {
+        httpOnly: true,
+        sameSite: true,
+      })
+        .send({ token });
     })
     .catch(next);
 };
