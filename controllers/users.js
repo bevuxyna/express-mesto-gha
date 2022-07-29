@@ -22,9 +22,8 @@ module.exports.getUser = (req, res, next) => {
     .catch(next);
 };
 
-module.exports.getUserInfo = (req, res, next) => {
-  const userId = req.params.id;
-  User.findById(userId)
+module.exports.getUserById = (req, res, next) => {
+  User.findById(req.params.userId)
     .then((data) => {
       if (!data) {
         throw new NotFoundError('Нет пользователя с таким id');
