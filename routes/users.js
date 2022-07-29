@@ -10,14 +10,14 @@ router.get('/:userId', celebrate({
   params: Joi.object().keys({
     id: Joi.string().required().hex().length(24),
   }),
-}), getUserInfo);
+}), getUser);
 
 router.get('/me', celebrate({
   body: Joi.object().keys({
     name: Joi.string().min(2).max(30),
     about: Joi.string().min(2).max(30),
   }),
-}), getUser);
+}), getUserInfo);
 
 router.patch('/me', updateUser);
 
