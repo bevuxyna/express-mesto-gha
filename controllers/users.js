@@ -5,14 +5,12 @@ const BadRequestError = require('../errors/bad-request-error');
 const NotFoundError = require('../errors/not-found-error');
 const ConflictError = require('../errors/conflict-error');
 
-// возвращает всех пользователей
 module.exports.getUsers = (req, res, next) => {
   User.find({})
     .then((users) => res.send({ data: users }))
     .catch(next);
 };
 
-// возвращает пользователя по _id
 module.exports.getUser = (req, res, next) => {
   const userId = req.user._id;
   return User.findById(userId)
@@ -85,11 +83,7 @@ module.exports.login = (req, res, next) => {
         'some-secret-key',
         { expiresIn: '7d' },
       );
-      res.cookie('jwt', token, {
-        httpOnly: true,
-        sameSite: true,
-      })
-        .send({ token });
+      res.status(200).send({ token });
     })
     .catch(next);
 };
