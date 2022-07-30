@@ -12,7 +12,7 @@
     "type": "git",
     "url": "git+https://github.com/bevuxyna/express-mesto-gha.git"
   },
-  "author": "",
+  "author": "Vlada Melnikova",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/bevuxyna/express-mesto-gha/issues"
