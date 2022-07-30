@@ -30,18 +30,17 @@ module.exports.createCard = (req, res, next) => {
 // удаляет карточку
 module.exports.deleteCard = (req, res, next) => {
   const { cardId } = req.params;
-  Card.findByIdAndRemove(cardId)
+  Card.findById(cardId)
     .then((card) => {
       if (!card) {
         throw new NotFoundError('Карточка с указанным _id не найдена');
       }
       if (JSON.stringify(card.owner) !== JSON.stringify(req.user._id)) {
         throw new ForbiddenError('Недостаточно прав для удаления карточки');
-      } else {
-        return Card.deleteOne(card)
-          .then(() => res.status(200).send({ message: 'Успешно' }));
       }
+      return Card.remove(card);
     })
+    .then(() => res.status(200).send({ message: 'Успешно' }))
     .catch((err) => {
       if (err.name === 'CastError') {
         next(new BadRequestError('Карточка с указанным _id не найдена'));
