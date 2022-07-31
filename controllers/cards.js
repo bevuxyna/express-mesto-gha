@@ -43,7 +43,7 @@ module.exports.deleteCard = (req, res, next) => {
     .then(() => res.status(200).send({ message: 'Успешно' }))
     .catch((err) => {
       if (err.name === 'CastError') {
-        next(new BadRequestError('Карточка с указанным _id не найдена'));
+        next(new BadRequestError('Невалидный id'));
         return;
       }
       next(err);
@@ -68,6 +68,7 @@ module.exports.likeCard = (req, res, next) => {
     .catch((err) => {
       if (err.name === 'CastError') {
         next(new BadRequestError('Переданы некорректные данные для постановки лайка'));
+        return;
       }
       next(err);
     });
